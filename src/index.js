@@ -11,7 +11,8 @@ class Square extends React.Component{
           <input
               className={"square "+this.props.squareClass}
               onChange={this.props.onChange}
-              value={this.props.value}>
+              value={this.props.value}
+              placeholder={this.props.number}>
               
           </input>
           
@@ -29,6 +30,7 @@ class Square extends React.Component{
        value={this.props.squares[i]}
        onChange={(event) => this.props.onChange(i,event)}
        squareClass = {this.props.squareClass}
+       number = {i+1}
        />
       );
     }
@@ -42,7 +44,7 @@ class Square extends React.Component{
           <label className='title'>
             {this.props.title}
           </label>
-          <div className="input-row">
+          <div>
 
             {this.renderSquare(0)}
             {this.renderSquare(1)}
@@ -61,16 +63,29 @@ class Square extends React.Component{
 
       const words = this.props.hints.map((step,index) => {
         return (
-          <li key={step.value}>
+          <li className='list-item' key={step.value}>
             <label>{step.value}</label>
           </li>
         )
       });
       return (
         <div>
+        <div>
+          <label className='title'>
+            Hints (
+              <input className='hint-box'
+               value={this.props.hintCount}
+               onChange={this.props.onChange}>
+              </input>
+              
+              )
+          </label>
+        </div>
+        <div className='hint'>
           <ul>
             {words}
           </ul>
+        </div>
         </div>
       )
     }
@@ -86,8 +101,8 @@ class Square extends React.Component{
         const display = this.props.showIndex ? step.index+1 +":"+step.letter: step;
 
         return (
-          <li key={key}>
-            <button onClick={() => this.props.onChange(step)}>{display}</button>
+          <li className='list-item' key={key}>
+            <button className={'remove-button '+this.props.className} onClick={() => this.props.onChange(step)}>{display}</button>
           </li>
         )
       })
@@ -114,6 +129,7 @@ class Square extends React.Component{
             invalidSquare: "",
             invalidLetters: Array(0),
             wordList: Array(0),
+            hintCount: 300,
             
         }
         this.loadWords();
@@ -237,7 +253,17 @@ class Square extends React.Component{
         () => this.calculateHints())
     }
 
+    hintCountChanged(event){
+      var num = parseInt(event.target.value);
+      if(num === NaN){
+        num = 20;
+      }
 
+      this.setState({
+        hintCount: num
+      });
+
+    }
     calculateHints(){
 
       console.log(this.state.greenLetters.length);
@@ -301,25 +327,21 @@ class Square extends React.Component{
 
     render() {
 
-      const loadLabel = this.state.wordList.length == 0 ? "Loading letters" : "Total Letters: " + this.state.wordList.length;
-      const hintLabel = "Total Hints: "+this.state.wordList.filter((t) => t.included === true).length;
-      return (
+      const loadLabel = this.state.wordList.length == 0 ? "Loading Words" : "Total Words: " + this.state.wordList.filter((t) => t.included === true).length+"/"+this.state.wordList.length;
+     return (
 
-        
+        //
         <div className="main">
           <div className='main-title'>
-          <label>
+          <h1>
           Wordle and Wordus Hint Machine
-          </label>
+          </h1>
           </div>
 
           <div >
-            <label className='title'>
+            <h2 className='title'>
               {loadLabel}
-            </label>
-            <label className='title'>
-              {hintLabel}
-            </label>
+            </h2>
           </div>
 
 
@@ -331,6 +353,7 @@ class Square extends React.Component{
                 title="Green Letters"
             />
           </div>
+          <div></div>
           <div className="letter-input">
             <BoxList 
                 squares = {this.state.yellowSquares}
@@ -338,20 +361,23 @@ class Square extends React.Component{
                 title="Yellow Letters"
                 squareClass = "yellow-square"
             />
-            <DisplayList
+          </div>
+          
+         <div >
+          <DisplayList
               showIndex = {true}
               letters = {this.state.yellowLetters}
               onChange={(letter) => this.handleYellowLetterRemove(letter)}
+              className="yellow-button"
             />
           </div>
-          
-         
-
 
           <div>
+            <div>
             <label className='title'>
               Invalid Letters
             </label>
+            </div>
             <div className='letter-input'>
             <Square
               value={this.state.invalidSquare}
@@ -359,16 +385,23 @@ class Square extends React.Component{
               squareClass = "black-square"
             />
 
+            
+            </div>
+
+            <div>
             <DisplayList
               showIndex = {false}
               letters = {this.state.invalidLetters}
               onChange={(letter) => this.handleInvalidLetterRemove(letter)}
+              className="black-button"
             />
             </div>
           </div>
           <div>
             <HintList
-            hints = {this.state.wordList.filter((t) => t.included).splice(0,20)}
+            hints = {this.state.wordList.filter((t) => t.included).splice(0,this.state.hintCount)}
+            hintCount = {this.state.hintCount}
+            onChange={(event) => this.hintCountChanged(event)}
             ></HintList>
           </div>
          

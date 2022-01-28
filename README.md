@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+## Wordus Wordle Hint Machine
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A website that helps people who are stuck in the game Wordus and Wordle
 
 ## Available Scripts
 
