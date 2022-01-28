@@ -229,12 +229,12 @@ class Square extends React.Component{
   handleTypeYellow(i,event) {
         const yellowLetters = this.state.yellowLetters.slice();
         console.log(i);
-        console.log(event.target.value);
-        if(yellowLetters.find((t) => t.index === i && t.letter === event.target.value )){
+        const letter = event.target.value.toLowerCase();
+        if(yellowLetters.find((t) => t.index === i && t.letter === letter )){
           console.log("Letter has already been added");
           return;
         }
-        yellowLetters.push({index:i,letter:event.target.value});
+        yellowLetters.push({index:i,letter:letter});
         this.setState({
           yellowLetters: yellowLetters,
         },
